@@ -8,28 +8,32 @@ public class SnakeGame {
     public Board board;
     public Snake snake;
 
-    public boolean inGame = true;
-    public Point apple ;
+    public boolean inGame = true ;
+    public Point fruit ;
 
     public Random random = new Random();
 
+
+
     public SnakeGame() {
-        this.board = new Board(10, 10); 
+        this.board = new Board(20, 20);
         this.snake = new Snake();
         
-        snake.MAX_SIZE = board.getHeight() * board.getWidth() ;
-        locateApple();
-        
+        snake.maxSize = board.getHeight() * board.getWidth() ;
+        this.fruit = locateFruit();
     }
 
-    private void locateApple() {
-        int appleX = random.nextInt(board.getWidth());
-        int appleY = random.nextInt(board.getHeight());
-        this.apple = new Point(appleX, appleY);
+    public void setSnake(Snake snake){
+        this.snake = snake;
+    }
+
+    public Point  locateFruit() {
+        int fruitX = random.nextInt(board.getWidth());
+        int fruitY = random.nextInt(board.getHeight());
+        return new Point(fruitX, fruitY);
     }
 
 
-    
 
     public void checkCollision() {
         Point head = snake.getHead();

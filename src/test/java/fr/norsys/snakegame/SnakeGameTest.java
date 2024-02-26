@@ -4,8 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SnakeGameTest {
 
@@ -57,15 +56,13 @@ public class SnakeGameTest {
     }
 
     @Test
-    public void testMoveLeft() {
+    public void testOppositeDirection() {
         Snake snake = new Snake();
-        snake.setDirection(Direction.DIRECTION_LEFT);
+        assertThrows(IllegalStateException.class, () -> {
+            snake.setDirection(Direction.DIRECTION_LEFT); // Passing Direction Lest as an opposite direction
+        });
 
-        snake.move();
-        Point head = snake.getHead();
 
-        assertEquals(snake.INITIAL_X_POSITION - 1, head.getX());
-        assertEquals(snake.INITIAL_X_POSITION, head.getY());
     }
 
     @Test
@@ -81,7 +78,7 @@ public class SnakeGameTest {
     }
 
     @Test
-    public void testGrow() {
+    public void testGrowAfterEat() {
         Snake snake = new Snake();
         int initialSize = snake.getSnakeBody().size();
         snake.setDirection(Direction.DIRECTION_RIGHT);
@@ -90,18 +87,16 @@ public class SnakeGameTest {
         Point head = snake.getHead();
 
         
-        snake.grow();
+        snake.Eat(new Point(head.getX()+1,head.getY()+1));
 
-        // Verify the size increases after growing
         assertEquals(initialSize + 1, snake.getSnakeBody().size());
 
     }
 
-        @Test
+    @Test
     public void testCollisionDetection() {
         SnakeGame snakeGame = new SnakeGame();
 
-        // Move the snake to cause a collision
         for (int i = 0; i < snakeGame.board.getHeight(); i++) {
             snakeGame.snake.move();
         }
@@ -126,8 +121,25 @@ public class SnakeGameTest {
 
         snakeGame.checkCollision();
 
-        assertFalse(snakeGame.inGame);
+        assertTrue(snakeGame.inGame);
     }
+
+    @Test
+    public void testSizeIncreaseAfterEatingFruit() {
+        SnakeGame snakeGame = new SnakeGame();
+        int initialSize = snakeGame.snake.getSnakeBody().size();
+
+        snakeGame.snake.Eat(snakeGame.locateFruit());
+
+        assertEquals(initialSize + 1, snakeGame.snake.getSnakeBody().size());
+    }
+
+    @Test
+    public void testIsWinGame() {
+        SnakeGame snakeGame = new SnakeGame();
+        assertFalse(snakeGame.snake.isWin());
+    }
+
 
 
 

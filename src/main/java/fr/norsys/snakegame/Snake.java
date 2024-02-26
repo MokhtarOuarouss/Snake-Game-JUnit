@@ -5,22 +5,30 @@ import java.util.List;
 
 public class Snake {
 
+    public static final int INITIAL_SIZE = 4;
+    public final int INITIAL_X_POSITION = 5;
+    public final int INITIAL_Y_POSITION = 5;
+
     public List<Point> snakeBody;
-    public final int INITIAL_SIZE = 3;
-    public  int MAX_SIZE ;
-    public final int INITIAL_X_POSITION = 10;
+
+    public  int maxSize ;
+    
     public Direction direction;
 
     public Snake() {
+        this(INITIAL_SIZE);
+    }
+
+    public Snake(int size) {
         this.snakeBody = new ArrayList<>();
         this.direction = Direction.DIRECTION_RIGHT;
 
-        for(int i=0;i<this.INITIAL_SIZE;i++){
-            this.snakeBody.add(new Point(INITIAL_X_POSITION, INITIAL_X_POSITION - i));
+        for (int i = 0; i < size; i++) {
+            this.snakeBody.add(new Point(INITIAL_X_POSITION, INITIAL_Y_POSITION - i));
         }
-
-        
     }
+
+
 
     public List<Point> getSnakeBody() {
         return snakeBody;
@@ -29,12 +37,6 @@ public class Snake {
     public Direction getDirection() {
         return direction;
     }
-
-    public void setDirection(Direction direction) {
-        this.direction = direction;
-    }
-
-    
 
     public void move() {
         
@@ -55,30 +57,43 @@ public class Snake {
         }
         
         snakeBody.remove(snakeBody.size() - 1);  
-        
+
     }
 
-    public void grow() {
-        Point tail = snakeBody.get(snakeBody.size() - 1);
+    public void Eat(Point fruit){
+        snakeBody.add(new Point( fruit.getX(),fruit.getY()));
+    }
+
+    public void setDirection(Direction newDirection) {
+        Direction oppositeDirection = getOppositeDirection();
+
+        if (!newDirection.equals(oppositeDirection)) {
+            this.direction = newDirection;
+        }
+        else throw new IllegalStateException("opposite Direction not allowed: " );
+    }
+
+    private Direction getOppositeDirection() {
         switch (direction) {
             case DIRECTION_UP:
-                snakeBody.add(new Point(tail.getX(), tail.getY() + 1));
-                break;
+                return Direction.DIRECTION_DOWN;
             case DIRECTION_DOWN:
-                snakeBody.add(new Point(tail.getX(), tail.getY() - 1));
-                break;
+                return Direction.DIRECTION_UP;
             case DIRECTION_LEFT:
-                snakeBody.add(new Point(tail.getX() + 1, tail.getY()));
-                break;
+                return Direction.DIRECTION_RIGHT;
             case DIRECTION_RIGHT:
-                snakeBody.add(new Point(tail.getX() - 1, tail.getY()));
-                break;
+                return Direction.DIRECTION_LEFT;
+            default:
+                throw new IllegalStateException("Unexpected value: " + direction);
         }
     }
 
-    public boolean contains(Point point) {
-        return snakeBody.stream().anyMatch(p -> p.getX() == point.getX() && p.getY() == point.getY());
+    public boolean isWin(){
+        return (snakeBody.size() == maxSize) ;
     }
+
+    
+
 
     public Point getHead() {
         return snakeBody.get(0);
