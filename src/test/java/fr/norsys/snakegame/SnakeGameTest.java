@@ -1,5 +1,6 @@
 package fr.norsys.snakegame;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SnakeGameTest {
 
     @Test
+    @DisplayName("Initial size of the snake body should be equal to INITIAL_SIZE")
     public void testInitialSize() {
         Snake snake = new Snake();
 
@@ -17,6 +19,7 @@ public class SnakeGameTest {
     }
 
     @Test
+    @DisplayName("Initial position of the snake body should be set correctly")
     public void testInitialPosition() {
         Snake snake = new Snake();
 
@@ -30,6 +33,7 @@ public class SnakeGameTest {
     }
 
     @Test
+    @DisplayName("Test moving up ")
     public void testMoveUp() {
         Snake snake = new Snake();
         int initialSize = snake.getSnakeBody().size();
@@ -44,6 +48,7 @@ public class SnakeGameTest {
     }
 
     @Test
+    @DisplayName("Test moving down ")
     public void testMoveDown() {
         Snake snake = new Snake();
         snake.setDirection(Direction.DIRECTION_DOWN);
@@ -56,16 +61,7 @@ public class SnakeGameTest {
     }
 
     @Test
-    public void testOppositeDirection() {
-        Snake snake = new Snake();
-        assertThrows(IllegalStateException.class, () -> {
-            snake.setDirection(Direction.DIRECTION_LEFT); // Passing Direction Lest as an opposite direction
-        });
-
-
-    }
-
-    @Test
+    @DisplayName("Test moving right ")
     public void testMoveRight() {
         Snake snake = new Snake();
         snake.setDirection(Direction.DIRECTION_RIGHT);
@@ -78,24 +74,20 @@ public class SnakeGameTest {
     }
 
     @Test
-    public void testGrowAfterEat() {
+    @DisplayName("Setting opposite direction ")
+    public void testOppositeDirection() {
         Snake snake = new Snake();
-        int initialSize = snake.getSnakeBody().size();
-        snake.setDirection(Direction.DIRECTION_RIGHT);
+        Direction initialDirection  = snake.getDirection(); // Direction right
+        snake.setDirection(Direction.DIRECTION_LEFT);
+        assertEquals(initialDirection ,snake.getDirection() );
 
-        
-        Point head = snake.getHead();
-
-        
-        snake.Eat(new Point(head.getX()+1,head.getY()+1));
-
-        assertEquals(initialSize + 1, snake.getSnakeBody().size());
 
     }
 
     @Test
+    @DisplayName("Collision detection should set inGame to false")
     public void testCollisionDetection() {
-        SnakeGame snakeGame = new SnakeGame();
+        SnakeGame snakeGame = new SnakeGame(20 , 20);
 
         for (int i = 0; i < snakeGame.board.getHeight(); i++) {
             snakeGame.snake.move();
@@ -107,8 +99,9 @@ public class SnakeGameTest {
     }
 
     @Test
+    @DisplayName("Test Game over on self-collision")
     public void testGameOverOnSelfCollision() {
-        SnakeGame snakeGame = new SnakeGame();
+        SnakeGame snakeGame = new SnakeGame( 20, 20);
 
         snakeGame.snake.setDirection(Direction.DIRECTION_DOWN);
         snakeGame.snake.move();
@@ -121,12 +114,14 @@ public class SnakeGameTest {
 
         snakeGame.checkCollision();
 
-        assertTrue(snakeGame.inGame);
+        assertFalse(snakeGame.inGame);
     }
 
+
     @Test
+    @DisplayName("Size should increase after eating fruit")
     public void testSizeIncreaseAfterEatingFruit() {
-        SnakeGame snakeGame = new SnakeGame();
+        SnakeGame snakeGame = new SnakeGame(20 , 20 );
         int initialSize = snakeGame.snake.getSnakeBody().size();
 
         snakeGame.snake.Eat(snakeGame.locateFruit());
@@ -135,11 +130,19 @@ public class SnakeGameTest {
     }
 
     @Test
+    @DisplayName("Win conditions ")
     public void testIsWinGame() {
-        SnakeGame snakeGame = new SnakeGame();
+
+        SnakeGame snakeGame = new SnakeGame(1 , 3 , 3);
         assertFalse(snakeGame.snake.isWin());
+
+        for (int i = 0 ; i < 8 ; i++){
+            snakeGame.snake.Eat(snakeGame.locateFruit());
+        }
+        assertTrue(snakeGame.snake.isWin());
     }
 
+    
 
 
 

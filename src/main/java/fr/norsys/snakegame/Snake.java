@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Snake {
 
-    public static final int INITIAL_SIZE = 4;
+    public  final int INITIAL_SIZE ;
     public final int INITIAL_X_POSITION = 5;
     public final int INITIAL_Y_POSITION = 5;
 
@@ -16,10 +16,11 @@ public class Snake {
     public Direction direction;
 
     public Snake() {
-        this(INITIAL_SIZE);
+        this(4);
     }
 
     public Snake(int size) {
+        this.INITIAL_SIZE = size ; 
         this.snakeBody = new ArrayList<>();
         this.direction = Direction.DIRECTION_RIGHT;
 
@@ -36,6 +37,19 @@ public class Snake {
 
     public Direction getDirection() {
         return direction;
+    }
+
+    public void setMaxSize(int maxSize) {
+        this.maxSize = maxSize;
+    }
+
+    public boolean isWin(){
+        return (snakeBody.size() == maxSize) ;
+    }
+
+
+    public Point getHead() {
+        return snakeBody.get(0);
     }
 
     public void move() {
@@ -70,7 +84,6 @@ public class Snake {
         if (!newDirection.equals(oppositeDirection)) {
             this.direction = newDirection;
         }
-        else throw new IllegalStateException("opposite Direction not allowed: " );
     }
 
     private Direction getOppositeDirection() {
@@ -88,14 +101,5 @@ public class Snake {
         }
     }
 
-    public boolean isWin(){
-        return (snakeBody.size() == maxSize) ;
-    }
-
     
-
-
-    public Point getHead() {
-        return snakeBody.get(0);
-    }
 }
